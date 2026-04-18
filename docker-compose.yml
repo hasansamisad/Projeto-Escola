@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # BANCO DE DADOS
+  db:
+    image: mysql:8.0
+    container_name: apirest_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: escola
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - minha-rede
+
+  # BACKEND
+  backend:
+    build: ./escolaBackend
+    container_name: apirest_node
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./escolaBackend:/app
+      - /app/node_modules
+    depends_on:
+      - db
+    networks:
+      - minha-rede
+
+  # FRONTEND
+  frontend:
+    build: ./escolaFrontend
+    container_name: escola_front
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./escolaFrontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:3001
+    depends_on:
+      - backend
+    networks:
+      - minha-rede
+
+networks:
+  minha-rede:
+    driver: bridge
+
+volumes:
+  mysql_data:
