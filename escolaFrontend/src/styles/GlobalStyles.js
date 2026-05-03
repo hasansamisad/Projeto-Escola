@@ -65,7 +65,7 @@ export default createGlobalStyle`
 
 // Container principal centralizado e responsivo
 export const Container = styled.section`
-  max-width: 480px;
+  max-width: 780px;
   background: #fff;
   margin: 80px auto;
   padding: 40px;

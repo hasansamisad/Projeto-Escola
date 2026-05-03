@@ -15,13 +15,15 @@ import alunoRoutes from './src/routes/alunoRoutes';
 import photoRoutes from './src/routes/photoRoutes';
 
 // Whitelist para limitar os locais de onde vem as requisições
-
+/*
 const whiteList = [
   'http://localhost:3000',
   'http://localhost:5173',
   'http://127.0.0.1:3000',
+  'http://127.0.0.1:5173', // Adicione esta linha!
 ];
 
+*/
 class App {
   constructor() {
     this.app = express();
@@ -31,17 +33,8 @@ class App {
 
   middlewares() {
     // 2. Agora ela será reconhecida aqui dentro
-    this.app.use(cors({
-      origin(origin, callback) {
-        // Se não houver origem (ex: Insomnia/Postman) ou se estiver na whitelist
-        if (!origin || whiteList.indexOf(origin) !== -1) {
-          callback(null, true);
-        } else {
-          callback(new Error('Not allowed by CORS'));
-        }
-      },
-    }));
-    this.app.use(helmet());
+    this.app.use(cors());
+    //this.app.use(helmet());
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(express.json());
     this.app.use(

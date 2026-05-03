@@ -9,7 +9,7 @@ import {
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
-import * as actions from '../../store/modules/example/actions';
+import * as actions from '../../store/modules/auth/actions';
 import history from '../../services/history';
 import { Nav } from './styled';
 
@@ -17,12 +17,12 @@ export default function Header() {
   const dispatch = useDispatch();
 
   // Pegamos o estado de login do Redux
-  const isLoggedIn = useSelector((state) => state.example.isLoggedIn);
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
   const handleLogout = (e) => {
     e.preventDefault();
-    dispatch(actions.logout());
-    history.push('/login');
+    dispatch(actions.loginFailure());
+    history.push('/');
   };
 
   return (
