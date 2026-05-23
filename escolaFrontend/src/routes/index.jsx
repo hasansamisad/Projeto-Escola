@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 
 import MyRoute from './MyRoute';
 
@@ -10,17 +10,25 @@ import Alunos from '../pages/Alunos';
 import Fotos from '../pages/Fotos';
 import Page404 from '../pages/Page404/index';
 
-export default function Routes() {
+export default function AppRoutes() {
   return (
-    <Switch>
-      {/* Rota raiz fechada (ex: um Dashboard) */}
-      <MyRoute path="/" exact component={Alunos} isClosed={false} />
-      <MyRoute path="/login" component={Login} isClosed={false} />
-      <MyRoute path="/register" component={Register} isClosed={false} />
-      <MyRoute path="/aluno/:id/edit" component={Aluno} isClosed={true} />
-      <MyRoute path="/aluno" component={Aluno} isClosed={true} />
-      <MyRoute path="/fotos/:id" component={Fotos} isClosed={true} />
-      <MyRoute path="*" component={Page404} />
-    </Switch>
+    <Routes>
+      {/* ROTAS ABERTAS */}
+      <Route element={<MyRoute isClosed={false} />}>
+        <Route path="/" element={<Alunos />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+      </Route>
+
+      {/*  ROTAS FECHADAS */}
+      <Route element={<MyRoute isClosed />}>
+        <Route path="/aluno/:id/edit" element={<Aluno />} />
+        <Route path="/aluno" element={<Aluno />} />
+        <Route path="/fotos/:id" element={<Fotos />} />
+      </Route>
+
+      {/* 🔍 ROTA 404 (Caso não encontre nenhuma URL acima) */}
+      <Route path="*" element={<Page404 />} />
+    </Routes>
   );
 }

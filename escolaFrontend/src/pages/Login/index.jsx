@@ -1,21 +1,28 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { isEmail } from 'validator';
 import { useDispatch, useSelector } from 'react-redux';
 import { get } from 'lodash';
+// 1. Importando os hooks nativos da v6/v7
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import { Container } from '../../styles/GlobalStyles';
 import { Form } from './styled';
 import { toast } from 'react-toastify';
-import * as actions from '../../store/modules/auth/actions'
+import * as actions from '../../store/modules/auth/actions';
 import Loading from '../../components/Loading/index';
 
-export default function Login(props) {
+export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const isLoading = useSelector((state) => state.auth.isLoading);
 
-  const prevPath = get(props, 'location.state.prevPath', '/');
+  // 2. Resgata com segurança a rota anterior guardada pelo MyRoute
+  const prevPath = get(location, 'state.prevPath', '/');
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -32,8 +39,9 @@ export default function Login(props) {
 
     if (formErrors) return;
 
-    dispatch(actions.loginRequest({ email, password, prevPath }));
-  }
+    // 3. Enviamos o email, password, a rota anterior e o hook de navegação para o Saga
+    dispatch(actions.loginRequest({ email, password, prevPath, navigate }));
+  };
 
   return (
     <Container>

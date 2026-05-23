@@ -1,37 +1,25 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { isEmail } from 'validator';
-import { get, set } from 'lodash';
-import { useSelector, useDispatch} from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import { Container } from '../../styles/GlobalStyles';
 import { Form } from './styled';
-import axios from '../../services/axios';
-import { useHistory } from 'react-router-dom';
 import Loading from '../../components/Loading/index';
 import * as actions from '../../store/modules/auth/actions';
 
 export default function Register() {
   const dispatch = useDispatch();
-
-  const [nome, setNome] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
+  const navigate = useNavigate();
 
   const id = useSelector((state) => state.auth.user.id);
   const nomeStored = useSelector((state) => state.auth.user.nome);
   const emailStored = useSelector((state) => state.auth.user.email);
-  const isLoading = useSelector((state) => state.auth.isLoading);
 
-  const history = useHistory();
-
-  React.useEffect(() => {
-    if(!id) return;
-
-    setNome(nomeStored);
-    setEmail(emailStored);
-  }, [emailStored, id, nomeStored]);
+  const [nome, setNome] = useState(nomeStored || '');
+  const [email, setEmail] = useState(emailStored || '');
+  const [password, setPassword] = useState('');
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -54,7 +42,7 @@ export default function Register() {
 
     if (formErrors) return;
 
-    dispatch(actions.registerRequest({ id, nome, email, password }));
+    dispatch(actions.registerRequest({ id, nome, email, password, navigate }));
   }
 
   return (
@@ -95,7 +83,9 @@ export default function Register() {
           />
         </label>
 
-        <button type="submit">{id ? 'Atualizar perfil' : 'Criar minha conta'}</button>
+        <button type="submit">
+          {id ? 'Atualizar perfil' : 'Criar minha conta'}
+        </button>
       </Form>
     </Container>
   );

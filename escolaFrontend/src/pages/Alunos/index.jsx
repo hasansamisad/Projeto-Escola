@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { get } from 'lodash';
-import { FaUserCircle, FaEdit, FaWindowClose, FaExclamation } from 'react-icons/fa';
+import {
+  FaUserCircle,
+  FaEdit,
+  FaWindowClose,
+  FaExclamation,
+} from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -12,7 +17,6 @@ import Loading from '../../components/Loading/index';
 export default function Alunos() {
   const [alunos, setAlunos] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
 
   useEffect(() => {
     async function fetchData() {
@@ -30,31 +34,33 @@ export default function Alunos() {
     fetchData();
   }, []);
 
-  const handleDeleteAsk = e => {
+  const handleDeleteAsk = (e) => {
     e.preventDefault();
-    /*
-      e.currentTarget: É o elemento que recebeu o evento (por exemplo, o input onde você clicou ou digitou).
-      .nextSibling: É uma propriedade que diz ao JavaScript: "pegue o próximo nó que estiver exatamente ao lado deste elemento no HTML".
-    */
-    const exclamation = e.currentTarget.nextSibling;
-    exclamation.setAttribute('display', 'block');
-    e.currentTarget.remove();
+    const buttonClose = e.currentTarget;
+    const exclamation = buttonClose.nextSibling;
 
-  }
+    if (exclamation) {
+      exclamation.style.display = 'inline-block';
+    }
+    buttonClose.style.display = 'none';
+  };
 
-  const handleDelete = async (e, id) => {
-    try{
+  const handleDelete = async (id) => {
+    try {
       setIsLoading(true);
       await axios.delete(`/alunos/${id}`);
-      e.target.parentElement.remove();
+
+      setAlunos(alunos.filter((aluno) => aluno.id !== id));
+
+      toast.success('Aluno excluído com sucesso!');
       setIsLoading(false);
-    } catch(err){
+    } catch (err) {
       const status = get(err, 'response.data.status', 0);
 
-      if(status === 401){
-        toast.error("Você precisa fazer login");
-      }else{
-        toast.error("Ocorreu um erro ao excluir aluno");
+      if (status === 401) {
+        toast.error('Você precisa fazer login');
+      } else {
+        toast.error('Ocorreu um erro ao excluir aluno');
       }
       setIsLoading(false);
     }
@@ -62,6 +68,8 @@ export default function Alunos() {
 
   return (
     <Container>
+      <Loading isLoading={isLoading} />
+
       <h1>Alunos</h1>
 
       <NovoAluno to="/aluno">Novo Aluno</NovoAluno>
@@ -84,11 +92,23 @@ export default function Alunos() {
               <FaEdit size={16} />
             </Link>
 
-            <Link onClick={handleDeleteAsk} to={`/aluno/${aluno.id}/delete`}>
-              <FaWindowClose size={16} />
-            </Link>
+            <span
+              onClick={handleDeleteAsk}
+              style={{
+                cursor: 'pointer',
+                display: 'inline-block',
+                marginRight: '10px',
+              }}
+            >
+              <FaWindowClose size={16} color="#ef4444" />
+            </span>
 
-            < FaExclamation  size={16} display = "none" cursor = "pointer" onClick={ e => handleDelete(e, aluno.id)}/>
+            <FaExclamation
+              size={16}
+              style={{ display: 'none', cursor: 'pointer' }}
+              color="#eab308"
+              onClick={() => handleDelete(aluno.id)}
+            />
           </div>
         ))}
       </AlunoContainer>

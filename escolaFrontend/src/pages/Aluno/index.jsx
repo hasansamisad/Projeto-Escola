@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import get from 'lodash/get';
 import { isEmail, isInt, isFloat } from 'validator';
-import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { FaUserCircle } from 'react-icons/fa';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import appConfig from '../../config/appConfig';
 import axios from '../../services/axios';
-import history from '../../services/history';
 import { Container } from '../../styles/GlobalStyles';
 import { Form, ProfilePicture } from './styled';
 import Loading from '../../components/Loading';
 import * as actions from '../../store/modules/auth/actions';
 
-export default function Aluno({ match }) {
+export default function Aluno() {
   const dispatch = useDispatch();
-  const id = get(match, 'params.id', '');
+  const navigate = useNavigate();
+  const { id } = useParams();
 
   const [nome, setNome] = useState('');
   const [sobrenome, setSobrenome] = useState('');
@@ -40,9 +40,9 @@ export default function Aluno({ match }) {
 
         if (fotoUrl) {
           const finalUrl = fotoUrl.startsWith('http')
-          ? fotoUrl
-          : `${appConfig.url}${fotoUrl}`;
-        setFoto(finalUrl);
+            ? fotoUrl
+            : `${appConfig.url}${fotoUrl}`;
+          setFoto(finalUrl);
         }
 
         setNome(data.nome);
@@ -59,12 +59,13 @@ export default function Aluno({ match }) {
         const errors = get(err, 'response.data.errors', []);
 
         if (status === 400) errors.forEach((error) => toast.error(error));
-        history.push('/');
+
+        navigate('/');
       }
     }
 
     getData();
-  }, [id]);
+  }, [id, navigate]);
 
   const handleFotoChange = (e) => {
     const arquivo = e.target.files[0];
@@ -113,12 +114,22 @@ export default function Aluno({ match }) {
 
       if (id) {
         await axios.put(`/alunos/${id}`, {
-          nome, sobrenome, email, idade, peso, altura,
+          nome,
+          sobrenome,
+          email,
+          idade,
+          peso,
+          altura,
         });
         toast.success('Aluno atualizado!');
       } else {
         const { data } = await axios.post('/alunos/', {
-          nome, sobrenome, email, idade, peso, altura,
+          nome,
+          sobrenome,
+          email,
+          idade,
+          peso,
+          altura,
         });
         alunoId = data.id;
         toast.success('Aluno criado!');
@@ -137,7 +148,7 @@ export default function Aluno({ match }) {
       }
 
       setIsLoading(false);
-      history.push('/');
+      navigate('/');
     } catch (err) {
       setIsLoading(false);
       const status = get(err, 'response.status', 0);
@@ -175,23 +186,45 @@ export default function Aluno({ match }) {
       </ProfilePicture>
 
       <Form onSubmit={handleSubmit}>
-        <input type="text" value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Nome" />
-        <input type="text" value={sobrenome} onChange={(e) => setSobrenome(e.target.value)} placeholder="Sobrenome" />
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="E-mail" />
-        <input type="number" value={idade} onChange={(e) => setIdade(e.target.value)} placeholder="Idade" />
-        <input type="text" value={peso} onChange={(e) => setPeso(e.target.value)} placeholder="Peso" />
-        <input type="text" value={altura} onChange={(e) => setAltura(e.target.value)} placeholder="Altura" />
+        <input
+          type="text"
+          value={nome}
+          onChange={(e) => setNome(e.target.value)}
+          placeholder="Nome"
+        />
+        <input
+          type="text"
+          value={sobrenome}
+          onChange={(e) => setSobrenome(e.target.value)}
+          placeholder="Sobrenome"
+        />
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="E-mail"
+        />
+        <input
+          type="number"
+          value={idade}
+          onChange={(e) => setIdade(e.target.value)}
+          placeholder="Idade"
+        />
+        <input
+          type="text"
+          value={peso}
+          onChange={(e) => setPeso(e.target.value)}
+          placeholder="Peso"
+        />
+        <input
+          type="text"
+          value={altura}
+          onChange={(e) => setAltura(e.target.value)}
+          placeholder="Altura"
+        />
 
         <button type="submit">Enviar</button>
       </Form>
     </Container>
   );
 }
-
-Aluno.propTypes = {
-  match: PropTypes.shape({
-    params: PropTypes.shape({
-      id: PropTypes.string,
-    }),
-  }).isRequired,
-};
