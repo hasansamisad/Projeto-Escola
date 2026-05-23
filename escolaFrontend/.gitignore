@@ -1,3 +1,8 @@
+# Segurança e Credenciais (Nunca enviar ao GitHub)
+.env
+.env.local
+.env.*.local
+
 # Dependências (Nunca enviar ao GitHub)
 node_modules/
 .pnpm-store/
@@ -29,4 +34,4 @@ pnpm-debug.log*
 # Sistema
 .DS_Store
 
-.env
+
