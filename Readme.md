@@ -4,6 +4,9 @@ Este projeto é uma aplicação robusta para gestão de alunos, desenvolvida com
 
 ---
 
+<img width="1919" height="946" alt="image" src="https://github.com/user-attachments/assets/e6adda60-71a3-43a2-a387-037dd0ad4e56" />
+
+
 ## 🛠️ Tecnologias Principais
 
 ### **Backend (API REST)**
